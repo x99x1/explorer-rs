@@ -1,6 +1,7 @@
 # 🗂️ Explorer-rs
 
 > A minimalist terminal file explorer built with Rust and Ratatui
+
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)
 ![Platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)
