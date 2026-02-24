@@ -30,7 +30,8 @@ pub fn draw(frame: &mut Frame, fm: &mut FileManager) {
             Style::default().bg(Color::Black).fg(Color::Cyan)
         };
 
-        ListItem::new(Line::from(Span::styled(item, style)))
+        let display_name: String = item.to_string_lossy().to_string();
+        ListItem::new(Line::from(Span::styled(display_name, style)))
     }).collect();
 
     let list: List<'_> = List::new(items);

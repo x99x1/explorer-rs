@@ -1,9 +1,10 @@
 use std::path::{Path, PathBuf};
+use std::ffi::OsString;
 
 use crate::filesystem::list_directory;
 
 pub struct FileManager {
-    pub items: Vec<String>,
+    pub items: Vec<OsString>,
     pub selected: usize,
     pub current_path: String
 }
@@ -43,7 +44,7 @@ impl FileManager {
         self.current_path = absolute_path.display().to_string();
     }
 
-    pub fn get_selected(&self) -> Option<&String> {
+    pub fn get_selected(&self) -> Option<&OsString> {
         self.items.get(self.selected)
     }
 }
