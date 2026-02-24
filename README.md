@@ -13,6 +13,12 @@
 - 🔙 **Go back** with Backspace
 - ❌ **Quit** with 'q'
 
+## ⬇️ Download
+
+Pre-compiled binaries are available in the [Releases](https://github.com/x99x1/explorer-rs/releases) section.
+
+Just download the executable and run it.
+
 ## 📦 Installation
 
 ```bash
