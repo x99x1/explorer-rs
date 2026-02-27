@@ -2,7 +2,6 @@ mod filesystem;
 mod filemanager;
 mod ui;
 
-use std::borrow::Cow;
 use std::io::{self, Stdout};
 use std::path::{Path, PathBuf};
 use crossterm::{
@@ -11,6 +10,7 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use ratatui::{backend::{Backend, CrosstermBackend}, Terminal, Frame};
+use filemanager::FileManager;
 
 use crate::ui::draw;
 
@@ -34,7 +34,7 @@ fn main() -> io::Result<()> {
 }
 
 fn run<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
-    let mut fm: crate::filemanager::FileManager = crate::filemanager::FileManager::new(Path::new("."));
+    let mut fm: FileManager = FileManager::new(Path::new("."))?;
 
     loop {
         terminal.draw(| frame: &mut Frame<'_> | draw(frame, &mut fm)).unwrap();
@@ -48,19 +48,17 @@ fn run<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
 
                 KeyCode::Enter => {
                     if let Some(selected) = fm.get_selected() {
-                        let selected_str: Cow<'_, str> = selected.to_string_lossy();
-                        let new_path: PathBuf = Path::new(&fm.current_path).join(selected_str.as_ref());
-
-                        if new_path.is_dir() {
-                            fm.refresh(&new_path);
-                        } 
+                        if selected.is_dir {
+                            let new_path: PathBuf = fm.current_path.join(&selected.name);
+                            fm.refresh(&new_path)?;
+                        }
                     }
                 }
 
                 KeyCode::Backspace => {
                     let parent: Option<PathBuf> = Path::new(&fm.current_path).parent().map(| p | p.to_path_buf());
                     if let Some(parent_path) = parent {
-                        fm.refresh(&parent_path);
+                        fm.refresh(&parent_path)?;
                     }
                 }
                 

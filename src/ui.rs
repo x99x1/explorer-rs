@@ -19,22 +19,26 @@ pub fn draw(frame: &mut Frame, fm: &mut FileManager) {
         ])
         .split(frame.area());
 
-    let title: Paragraph = Paragraph::new(format!("{}", fm.current_path))
+    let title: Paragraph = Paragraph::new(format!("{}", fm.current_path.display()))
         .style(Style::default().bg(Color::Cyan).fg(Color::Black).add_modifier(Modifier::BOLD));
     frame.render_widget(title, chunks[0]);
 
-    let items: Vec<ListItem> = fm.items.iter().enumerate().map(| (i, item) | {
+    let entries: Vec<ListItem> = fm.entries.iter().enumerate().map(| (i, entry) | {
         let style = if i == fm.selected {
             Style::default().bg(Color::Cyan).fg(Color::Black)
         } else {
             Style::default().bg(Color::Black).fg(Color::Cyan)
         };
 
-        let display_name: String = item.to_string_lossy().to_string();
+        let display_name = format!("{} {}",
+                if entry.is_dir { "D" } else { "F" },
+                entry.name.to_string_lossy()
+        );
+
         ListItem::new(Line::from(Span::styled(display_name, style)))
     }).collect();
 
-    let list: List<'_> = List::new(items);
+    let list: List<'_> = List::new(entries);
 
     let mut list_state = ListState::default();
     list_state.select(Some(fm.selected));
