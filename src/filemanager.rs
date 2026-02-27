@@ -9,6 +9,19 @@ pub struct FileManager {
     pub current_path: PathBuf
 }
 
+pub enum SortType {
+    DIRECTORYFIRST,
+    FILEFIRST,
+    ALPHABETICAL,
+    SIZE,
+    DATE
+}
+
+pub enum SortOrder {
+    ASCENDING,
+    DESCENDING
+}
+
 impl FileManager {
     pub fn new(path: &Path) -> io::Result<Self> {
         let absolute_path: PathBuf = path.canonicalize()?;
