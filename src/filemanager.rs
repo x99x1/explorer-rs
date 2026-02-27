@@ -1,3 +1,4 @@
+use std::fs::File;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -13,7 +14,7 @@ impl FileManager {
     pub fn new(path: &Path) -> io::Result<Self> {
         let absolute_path: PathBuf = path.canonicalize()?;
         Ok(Self {
-            entries: list_directory(&absolute_path)?,
+            entries: Self::sort(&absolute_path),
             selected: 0,
             current_path: absolute_path 
         })
@@ -33,12 +34,23 @@ impl FileManager {
 
     pub fn refresh(&mut self, path: &Path) -> io::Result<()> {
         self.current_path = path.canonicalize()?;
-        self.entries = list_directory(&self.current_path)?;
+        self.entries = Self::sort(&self.current_path);
         self.selected = 0;
         Ok(())
     }
 
     pub fn get_selected(&self) -> Option<&FileEntry> {
         self.entries.get(self.selected)
+    }
+
+    fn sort(path: &Path) -> Vec<FileEntry> {
+        let mut entries: Vec<FileEntry> = list_directory(path).unwrap_or_default();
+        entries.sort_by( | a: &FileEntry, b: &FileEntry | {
+            if a.is_dir && !b.is_dir { std::cmp::Ordering::Less
+            } else if !a.is_dir && b.is_dir { std::cmp::Ordering::Greater
+            } else { a.name.cmp(&b.name) }
+        });
+
+        entries
     }
 }
